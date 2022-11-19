@@ -3,6 +3,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
 import authRoutes from "./routes/authRoutes";
+import questionnaireRoutes from "./routes/quesionnaireRoutes";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 const port = 6000;
 
 app.use("/api/users", authRoutes);
+app.use("/api/quesionnaire", questionnaireRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello world");
