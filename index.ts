@@ -4,17 +4,18 @@ import dotenv from "dotenv";
 import connectDB from "./config/db";
 import authRoutes from "./routes/authRoutes";
 import questionnaireRoutes from "./routes/quesionnaireRoutes";
+import cors from 'cors';
 
 dotenv.config();
 
 connectDB();
 
 const app = express();
-
+app.use(cors());
 app.use(morgan("tiny"));
 app.use(express.json());
 
-const port = 6000;
+const port = 8000;
 
 app.use("/api/users", authRoutes);
 app.use("/api/quesionnaire", questionnaireRoutes);
