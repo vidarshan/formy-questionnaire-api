@@ -23,15 +23,13 @@ const quesionnaireSchema = new Schema<any>(
       required: true,
       unique: true,
     },
-    isReversible: { questionSchema },
+    isPublic: {
+      type: Boolean,
+      required: true,
+    },
     questions: {
       type: Array,
       required: true,
-    },
-    isOnePage: {
-      type: Boolean,
-      required: true,
-      default: false,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,43 +1,40 @@
-import { Request } from "express";
-import expressAsyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
 import User from "../models/User";
-import { IGetUserAuthInfoRequest } from "../definitions";
 
-interface JwtPayload {
-  _id: string;
-}
+const protect = asyncHandler(async (req: any, res: any, next: any) => {
+  let token;
 
-const protect = expressAsyncHandler(
-  async (req: IGetUserAuthInfoRequest, res, next) => {
-    let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      const decoded: any = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      try {
-        token = req.headers.authorization.split(" ")[1];
-        const { _id } = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
+      req.user = await User.findById(decoded?.id).select("-password");
 
-        req.user = await User.findById({ _id, "tokens.token": token }).select(
-          "-password"
-        );
-
-        next();
-      } catch (error) {
-        // tslint:disable-next-line:no-console
-        console.error(error);
-        res.status(401);
-        throw new Error("Not authorized, token failed");
-      }
-    }
-
-    if (!token) {
+      next();
+    } catch (error) {
       res.status(401);
-      throw new Error("Not authorized, no token");
+      throw new Error("Not authorized, token error");
     }
   }
-);
 
-export { protect };
+  if (!token) {
+    res.status(401);
+    throw new Error("Not authorized. No token available");
+  }
+});
+
+const admin = (req: any, res: any, next: any) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not authorized as an admin");
+  }
+};
+
+export { protect, admin };

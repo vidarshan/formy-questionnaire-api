@@ -1,32 +1,20 @@
 import asyncHandler from "express-async-handler";
+import Quesionnaire from "../models/Quesionnaire";
 
-const createQuesionnaire = asyncHandler(async (req, res) => {
-  const { title, description, isReversible, questions, isOnePage } = req.body;
+const createQuesionnaire = asyncHandler(async (req: any, res) => {
+  const { _id } = req.user;
+  const { title, description, isPublic, questions } = req.body;
 
-  // const user = await User.findOne({ email });
+  const newQuesionnaire = new Quesionnaire({
+    title,
+    description,
+    isPublic,
+    questions,
+    user: _id,
+  });
 
-  if (req.body) {
-    // tslint:disable-next-line:no-console
-    console.log(title);
-    // tslint:disable-next-line:no-console
-    console.log(description);
-    // tslint:disable-next-line:no-console
-    console.log(isReversible);
-    // tslint:disable-next-line:no-console
-    console.log(questions);
-    // tslint:disable-next-line:no-console
-    console.log(isOnePage);
-    //   res.json({
-    //     _id: user._id,
-    //     name: user.name,
-    //     email: user.email,
-    //     isAdmin: user.isAdmin,
-    //     token: generateToken(user._id),
-    //   });
-  } else {
-    res.status(401);
-    throw new Error("Invalid email or password");
-  }
+  const createdQuesionnaire = await newQuesionnaire.save();
+  res.status(201).json(createdQuesionnaire);
 });
 
-export { createQuesionnaire};
+export { createQuesionnaire };
