@@ -21,9 +21,16 @@ const quesionnaireSchema = new Schema<any>(
     description: {
       type: String,
       required: true,
-      unique: true,
     },
     isPublic: {
+      type: Boolean,
+      required: true,
+    },
+    isPublished: {
+      type: Boolean,
+      required: true,
+    },
+    isLinkValid: {
       type: Boolean,
       required: true,
     },

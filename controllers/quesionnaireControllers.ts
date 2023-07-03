@@ -11,6 +11,8 @@ const createQuestionnaire = asyncHandler(async (req: any, res) => {
     isPublic,
     questions,
     user: _id,
+    isPublished: true,
+    isLinkValid: true,
   });
 
   const createdQuestionnaire = await newQuestionnaire.save();
