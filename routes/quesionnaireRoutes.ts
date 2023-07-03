@@ -1,8 +1,8 @@
 import express from "express";
 import { protect } from "../middleware/authMiddleware";
-import { createQuesionnaire } from "../controllers/quesionnaireControllers";
+import { createQuestionnaire } from "../controllers/quesionnaireControllers";
 const router = express.Router();
 
-router.route("/").post(protect, createQuesionnaire);
+router.route("/").post(protect, createQuestionnaire);
 
 export default router;

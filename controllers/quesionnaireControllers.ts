@@ -1,11 +1,11 @@
 import asyncHandler from "express-async-handler";
 import Quesionnaire from "../models/Quesionnaire";
 
-const createQuesionnaire = asyncHandler(async (req: any, res) => {
+const createQuestionnaire = asyncHandler(async (req: any, res) => {
   const { _id } = req.user;
   const { title, description, isPublic, questions } = req.body;
 
-  const newQuesionnaire = new Quesionnaire({
+  const newQuestionnaire = new Quesionnaire({
     title,
     description,
     isPublic,
@@ -13,8 +13,8 @@ const createQuesionnaire = asyncHandler(async (req: any, res) => {
     user: _id,
   });
 
-  const createdQuesionnaire = await newQuesionnaire.save();
-  res.status(201).json(createdQuesionnaire);
+  const createdQuestionnaire = await newQuestionnaire.save();
+  res.status(201).json(createdQuestionnaire);
 });
 
-export { createQuesionnaire };
+export { createQuestionnaire };
