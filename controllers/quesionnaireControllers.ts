@@ -19,4 +19,20 @@ const createQuestionnaire = asyncHandler(async (req: any, res) => {
   res.status(201).json(createdQuestionnaire);
 });
 
-export { createQuestionnaire };
+const publishQuestionnaire = asyncHandler(async (req: any, res) => {
+  const questionnaire = await Quesionnaire.findById(req.params.id);
+  const { title, description, isPublic, isPublished, isLinkValid, questions } =
+    req.body;
+  if (questionnaire) {
+    questionnaire.title = title;
+    questionnaire.description = description;
+    questionnaire.isPublic = isPublic;
+    questionnaire.isPublished = isPublished;
+    questionnaire.isLinkValid = isLinkValid;
+    questionnaire.questions = questions;
+  }
+  const updatedQuestionnaire = await questionnaire.save();
+  res.status(201).json(updatedQuestionnaire);
+});
+
+export { createQuestionnaire, publishQuestionnaire };
