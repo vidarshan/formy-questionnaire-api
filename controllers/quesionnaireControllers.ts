@@ -3,7 +3,7 @@ import Quesionnaire from "../models/Quesionnaire";
 
 const createQuestionnaire = asyncHandler(async (req: any, res) => {
   const { _id } = req.user;
-  const { title, description, isPublic, questions } = req.body;
+  const { title, description, isPublic, isOneTime, questions } = req.body;
 
   const newQuestionnaire = new Quesionnaire({
     title,
@@ -13,6 +13,7 @@ const createQuestionnaire = asyncHandler(async (req: any, res) => {
     user: _id,
     isPublished: true,
     isLinkValid: true,
+    isOneTime,
   });
 
   const createdQuestionnaire = await newQuestionnaire.save();
@@ -47,8 +48,4 @@ const deleteQuestionnaire = asyncHandler(async (req: any, res: any) => {
   }
 });
 
-export {
-  createQuestionnaire,
-  editQuestionnaire,
-  deleteQuestionnaire,
-};
+export { createQuestionnaire, editQuestionnaire, deleteQuestionnaire };

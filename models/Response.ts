@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { uuid } from "uuidv4";
 
-const questionSchema = new Schema<any>(
+const answerSchema = new Schema<any>(
   {
     _id: {
       type: String,
@@ -19,7 +19,7 @@ const questionSchema = new Schema<any>(
   }
 );
 
-const quesionnaireSchema = new Schema<any>(
+const paperSchema = new Schema<any>(
   {
     title: {
       type: String,
@@ -49,7 +49,11 @@ const quesionnaireSchema = new Schema<any>(
       type: Boolean,
       required: true,
     },
-    questions: [questionSchema],
+    questionnaireId: {
+      type: String,
+      required: true,
+    },
+    questions: [answerSchema],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -61,6 +65,6 @@ const quesionnaireSchema = new Schema<any>(
   }
 );
 
-const Quesionnaire = mongoose.model("Quesionnaire", quesionnaireSchema);
+const Paper = mongoose.model("Paper", paperSchema);
 
-export default Quesionnaire;
+export default Paper;
