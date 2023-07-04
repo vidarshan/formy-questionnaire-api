@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.route("/").post(protect, createQuestionnaire);
 router
-  .route("/publish/:id")
+  .route("/:id")
   .delete(protect, deleteQuestionnaire)
   .put(protect, editQuestionnaire);
 

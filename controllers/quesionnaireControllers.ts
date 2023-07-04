@@ -47,4 +47,8 @@ const deleteQuestionnaire = asyncHandler(async (req: any, res: any) => {
   }
 });
 
-export { createQuestionnaire, editQuestionnaire, deleteQuestionnaire };
+export {
+  createQuestionnaire,
+  editQuestionnaire,
+  deleteQuestionnaire,
+};

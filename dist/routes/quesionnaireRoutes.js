@@ -8,6 +8,9 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const quesionnaireControllers_1 = require("../controllers/quesionnaireControllers");
 const router = express_1.default.Router();
 router.route("/").post(authMiddleware_1.protect, quesionnaireControllers_1.createQuestionnaire);
-router.route("/publish/:id").put(authMiddleware_1.protect, quesionnaireControllers_1.publishQuestionnaire);
+router
+    .route("/:id")
+    .delete(authMiddleware_1.protect, quesionnaireControllers_1.deleteQuestionnaire)
+    .put(authMiddleware_1.protect, quesionnaireControllers_1.editQuestionnaire);
 exports.default = router;
 //# sourceMappingURL=quesionnaireRoutes.js.map

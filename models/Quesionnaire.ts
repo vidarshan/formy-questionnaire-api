@@ -1,11 +1,18 @@
 import mongoose, { Schema } from "mongoose";
+import { uuid } from "uuidv4";
 
 const questionSchema = new Schema<any>(
   {
+    _id: {
+      type: String,
+      default: uuid(),
+    },
     title: { type: String, required: true },
-    subtitle: { type: Number, required: false },
+    subtitle: { type: String, required: false },
     type: { type: String, required: true },
-    content: { type: Object, required: true },
+    content: { type: String, required: true },
+    answer: { type: String, required: true },
+    response: { type: String, default: null, required: false },
   },
   {
     timestamps: true,
@@ -22,6 +29,10 @@ const quesionnaireSchema = new Schema<any>(
       type: String,
       required: true,
     },
+    isAuthRequired: {
+      type: Boolean,
+      required: false,
+    },
     isPublic: {
       type: Boolean,
       required: true,
@@ -34,9 +45,10 @@ const quesionnaireSchema = new Schema<any>(
       type: Boolean,
       required: true,
     },
-    questions: {
-      type: Array,
-      required: true,
+    questions: [questionSchema],
+    participant: {
+      type: String,
+      required: false,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
