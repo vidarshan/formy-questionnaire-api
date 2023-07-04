@@ -19,7 +19,7 @@ const createQuestionnaire = asyncHandler(async (req: any, res) => {
   res.status(201).json(createdQuestionnaire);
 });
 
-const publishQuestionnaire = asyncHandler(async (req: any, res) => {
+const editQuestionnaire = asyncHandler(async (req: any, res) => {
   const questionnaire = await Quesionnaire.findById(req.params.id);
   const { title, description, isPublic, isPublished, isLinkValid, questions } =
     req.body;
@@ -35,4 +35,16 @@ const publishQuestionnaire = asyncHandler(async (req: any, res) => {
   res.status(201).json(updatedQuestionnaire);
 });
 
-export { createQuestionnaire, publishQuestionnaire };
+const deleteQuestionnaire = asyncHandler(async (req: any, res: any) => {
+  const questionnaire = await Quesionnaire.findById(req.params.id);
+
+  if (questionnaire) {
+    await questionnaire.remove();
+    res.json({ message: "Questionnaire removed" });
+  } else {
+    res.status(404);
+    throw new Error("Questionnaire not found");
+  }
+});
+
+export { createQuestionnaire, editQuestionnaire, deleteQuestionnaire };
