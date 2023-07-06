@@ -17,7 +17,7 @@ const express_async_handler_1 = __importDefault(require("express-async-handler")
 const Quesionnaire_1 = __importDefault(require("../models/Quesionnaire"));
 const createQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.user;
-    const { title, description, isPublic, questions } = req.body;
+    const { title, description, isPublic, isOneTime, questions } = req.body;
     const newQuestionnaire = new Quesionnaire_1.default({
         title,
         description,
@@ -26,6 +26,7 @@ const createQuestionnaire = (0, express_async_handler_1.default)((req, res) => _
         user: _id,
         isPublished: true,
         isLinkValid: true,
+        isOneTime,
     });
     const createdQuestionnaire = yield newQuestionnaire.save();
     res.status(201).json(createdQuestionnaire);

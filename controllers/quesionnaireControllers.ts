@@ -48,4 +48,14 @@ const deleteQuestionnaire = asyncHandler(async (req: any, res: any) => {
   }
 });
 
-export { createQuestionnaire, editQuestionnaire, deleteQuestionnaire };
+const getAllQuestionnaires = asyncHandler(async (req: any, res: any) => {
+  const questionnaires = await Quesionnaire.find({ user: req.user._id });
+  res.json(questionnaires);
+});
+
+export {
+  getAllQuestionnaires,
+  createQuestionnaire,
+  editQuestionnaire,
+  deleteQuestionnaire,
+};

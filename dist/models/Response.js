@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const uuidv4_1 = require("uuidv4");
-const questionSchema = new mongoose_1.Schema({
+const answerSchema = new mongoose_1.Schema({
     _id: {
         type: String,
         default: (0, uuidv4_1.uuid)(),
@@ -39,7 +39,7 @@ const questionSchema = new mongoose_1.Schema({
 }, {
     timestamps: true,
 });
-const quesionnaireSchema = new mongoose_1.Schema({
+const paperSchema = new mongoose_1.Schema({
     title: {
         type: String,
         required: true,
@@ -68,7 +68,11 @@ const quesionnaireSchema = new mongoose_1.Schema({
         type: Boolean,
         required: true,
     },
-    questions: [questionSchema],
+    questionnaireId: {
+        type: String,
+        required: true,
+    },
+    questions: [answerSchema],
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         required: true,
@@ -77,6 +81,6 @@ const quesionnaireSchema = new mongoose_1.Schema({
 }, {
     timestamps: true,
 });
-const Quesionnaire = mongoose_1.default.model("Quesionnaire", quesionnaireSchema);
-exports.default = Quesionnaire;
-//# sourceMappingURL=Quesionnaire.js.map
+const Paper = mongoose_1.default.model("Paper", paperSchema);
+exports.default = Paper;
+//# sourceMappingURL=Response.js.map
