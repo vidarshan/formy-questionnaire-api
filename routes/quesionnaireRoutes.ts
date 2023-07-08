@@ -1,6 +1,7 @@
 import express from "express";
 import { protect } from "../middleware/authMiddleware";
 import {
+  getQuestionnaire,
   getAllQuestionnaires,
   createQuestionnaire,
   deleteQuestionnaire,
@@ -14,6 +15,7 @@ router
   .post(protect, createQuestionnaire);
 router
   .route("/:id")
+  .get(protect, getQuestionnaire)
   .delete(protect, deleteQuestionnaire)
   .put(protect, editQuestionnaire);
 

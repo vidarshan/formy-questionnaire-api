@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteQuestionnaire = exports.editQuestionnaire = exports.createQuestionnaire = void 0;
+exports.deleteQuestionnaire = exports.editQuestionnaire = exports.createQuestionnaire = exports.getAllQuestionnaires = exports.getQuestionnaire = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const Quesionnaire_1 = __importDefault(require("../models/Quesionnaire"));
 const createQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -59,4 +59,20 @@ const deleteQuestionnaire = (0, express_async_handler_1.default)((req, res) => _
     }
 }));
 exports.deleteQuestionnaire = deleteQuestionnaire;
+const getQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const questionnaire = yield Quesionnaire_1.default.findById(req.params.id);
+    if (questionnaire) {
+        res.json(questionnaire);
+    }
+    else {
+        res.status(404);
+        throw new Error("Questionnaire not found");
+    }
+}));
+exports.getQuestionnaire = getQuestionnaire;
+const getAllQuestionnaires = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const questionnaires = yield Quesionnaire_1.default.find({ user: req.user._id });
+    res.json(questionnaires);
+}));
+exports.getAllQuestionnaires = getAllQuestionnaires;
 //# sourceMappingURL=quesionnaireControllers.js.map

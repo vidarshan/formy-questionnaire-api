@@ -7,9 +7,13 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const quesionnaireControllers_1 = require("../controllers/quesionnaireControllers");
 const router = express_1.default.Router();
-router.route("/").post(authMiddleware_1.protect, quesionnaireControllers_1.createQuestionnaire);
+router
+    .route("/")
+    .get(authMiddleware_1.protect, quesionnaireControllers_1.getAllQuestionnaires)
+    .post(authMiddleware_1.protect, quesionnaireControllers_1.createQuestionnaire);
 router
     .route("/:id")
+    .get(authMiddleware_1.protect, quesionnaireControllers_1.getQuestionnaire)
     .delete(authMiddleware_1.protect, quesionnaireControllers_1.deleteQuestionnaire)
     .put(authMiddleware_1.protect, quesionnaireControllers_1.editQuestionnaire);
 exports.default = router;

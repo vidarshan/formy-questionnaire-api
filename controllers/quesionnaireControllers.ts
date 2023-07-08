@@ -48,12 +48,24 @@ const deleteQuestionnaire = asyncHandler(async (req: any, res: any) => {
   }
 });
 
+const getQuestionnaire = asyncHandler(async (req: any, res: any) => {
+  const questionnaire = await Quesionnaire.findById(req.params.id);
+
+  if (questionnaire) {
+    res.json(questionnaire);
+  } else {
+    res.status(404);
+    throw new Error("Questionnaire not found");
+  }
+});
+
 const getAllQuestionnaires = asyncHandler(async (req: any, res: any) => {
   const questionnaires = await Quesionnaire.find({ user: req.user._id });
   res.json(questionnaires);
 });
 
 export {
+  getQuestionnaire,
   getAllQuestionnaires,
   createQuestionnaire,
   editQuestionnaire,
