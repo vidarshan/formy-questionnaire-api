@@ -25,17 +25,53 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const uuidv4_1 = require("uuidv4");
+const optionSchema = new mongoose_1.Schema({
+    _id: {
+        type: String,
+        default: (0, uuidv4_1.uuid)(),
+    },
+    label: { type: String, required: true },
+    value: { type: String, required: true },
+});
 const questionSchema = new mongoose_1.Schema({
     _id: {
         type: String,
         default: (0, uuidv4_1.uuid)(),
     },
     title: { type: String, required: true },
-    subtitle: { type: String, required: false },
     type: { type: String, required: true },
-    content: { type: String, required: true },
-    answer: { type: String, required: true },
-    response: { type: String, default: null, required: false },
+    values: { type: String, required: false },
+    options: [optionSchema],
+    answers: { type: String, default: null, required: false },
+    required: { type: Boolean, default: false, required: false },
+}, {
+    timestamps: true,
+});
+const answerSchema = new mongoose_1.Schema({
+    _id: {
+        type: String,
+        default: (0, uuidv4_1.uuid)(),
+    },
+    title: { type: String, required: true },
+    type: { type: String, required: true },
+    values: { type: String, required: false },
+    answers: { type: String, default: null, required: false },
+    required: { type: Boolean, default: false, required: false },
+}, {
+    timestamps: true,
+});
+const responseSchema = new mongoose_1.Schema({
+    _id: {
+        type: String,
+        default: (0, uuidv4_1.uuid)(),
+    },
+    answers: [answerSchema],
+    user: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        default: null,
+        required: true,
+        ref: "User",
+    },
 }, {
     timestamps: true,
 });
@@ -69,6 +105,7 @@ const quesionnaireSchema = new mongoose_1.Schema({
         required: true,
     },
     questions: [questionSchema],
+    responses: [questionSchema],
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         required: true,

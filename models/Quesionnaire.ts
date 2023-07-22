@@ -1,6 +1,15 @@
 import mongoose, { Schema } from "mongoose";
 import { uuid } from "uuidv4";
 
+const optionSchema = new Schema<any>({
+  _id: {
+    type: String,
+    default: uuid(),
+  },
+  label: { type: String, required: true },
+  value: { type: String, required: true },
+});
+
 const questionSchema = new Schema<any>(
   {
     _id: {
@@ -10,9 +19,25 @@ const questionSchema = new Schema<any>(
     title: { type: String, required: true },
     type: { type: String, required: true },
     values: { type: String, required: false },
-    answers: { type: String,  default: null, required: false },
-    response: { type: String, default: null, required: false },
+    options: [optionSchema],
+    answers: { type: String, default: null, required: false },
     required: { type: Boolean, default: false, required: false },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const answerSchema = new Schema<any>(
+  {
+    _id: {
+      type: String,
+      default: uuid(),
+    },
+    username: { type: String, required: false, default: "Anonymous" },
+    userEmail: { type: String, required: false, default: null },
+    title: { type: String, required: true },
+    content: [questionSchema],
   },
   {
     timestamps: true,
@@ -50,6 +75,7 @@ const quesionnaireSchema = new Schema<any>(
       required: true,
     },
     questions: [questionSchema],
+    responses: [answerSchema],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

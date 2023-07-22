@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteQuestionnaire = exports.editQuestionnaire = exports.createQuestionnaire = exports.getAllQuestionnaires = exports.getQuestionnaire = void 0;
+exports.answerQuestionnaire = exports.deleteQuestionnaire = exports.publishQuestionnaire = exports.editQuestionnaire = exports.createQuestionnaire = exports.getAllQuestionnaires = exports.getQuestionnaire = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const Quesionnaire_1 = __importDefault(require("../models/Quesionnaire"));
 const createQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -24,7 +24,7 @@ const createQuestionnaire = (0, express_async_handler_1.default)((req, res) => _
         isPublic,
         questions,
         user: _id,
-        isPublished: true,
+        isPublished: false,
         isLinkValid: true,
         isOneTime,
     });
@@ -34,19 +34,30 @@ const createQuestionnaire = (0, express_async_handler_1.default)((req, res) => _
 exports.createQuestionnaire = createQuestionnaire;
 const editQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const questionnaire = yield Quesionnaire_1.default.findById(req.params.id);
-    const { title, description, isPublic, isPublished, isLinkValid, questions } = req.body;
+    const mutableQuestions = questionnaire.questions;
+    mutableQuestions.push(req.body.questions[0]);
+    const { title, description, isPublic, isPublished, isLinkValid } = req.body;
     if (questionnaire) {
         questionnaire.title = title;
         questionnaire.description = description;
         questionnaire.isPublic = isPublic;
         questionnaire.isPublished = isPublished;
         questionnaire.isLinkValid = isLinkValid;
-        questionnaire.questions = questions;
+        questionnaire.questions = mutableQuestions;
     }
     const updatedQuestionnaire = yield questionnaire.save();
     res.status(201).json(updatedQuestionnaire);
 }));
 exports.editQuestionnaire = editQuestionnaire;
+const publishQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const questionnaire = yield Quesionnaire_1.default.findById(req.params.id);
+    if (questionnaire) {
+        questionnaire.isPublished = true;
+    }
+    const updatedQuestionnaire = yield questionnaire.save();
+    res.status(201).json(updatedQuestionnaire);
+}));
+exports.publishQuestionnaire = publishQuestionnaire;
 const deleteQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const questionnaire = yield Quesionnaire_1.default.findById(req.params.id);
     if (questionnaire) {
@@ -75,4 +86,12 @@ const getAllQuestionnaires = (0, express_async_handler_1.default)((req, res) => 
     res.json(questionnaires);
 }));
 exports.getAllQuestionnaires = getAllQuestionnaires;
+const answerQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const questionnaires = yield Quesionnaire_1.default.findById(req.params.id);
+    const mutableResponses = questionnaires.responses;
+    mutableResponses.push(req.body.answers);
+    questionnaires.responses.push(req.body.answers);
+    // res.json(questionnaires);
+}));
+exports.answerQuestionnaire = answerQuestionnaire;
 //# sourceMappingURL=quesionnaireControllers.js.map

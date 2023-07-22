@@ -11,7 +11,7 @@ const createQuestionnaire = asyncHandler(async (req: any, res) => {
     isPublic,
     questions,
     user: _id,
-    isPublished: true,
+    isPublished: false,
     isLinkValid: true,
     isOneTime,
   });
@@ -22,15 +22,25 @@ const createQuestionnaire = asyncHandler(async (req: any, res) => {
 
 const editQuestionnaire = asyncHandler(async (req: any, res) => {
   const questionnaire = await Quesionnaire.findById(req.params.id);
-  const { title, description, isPublic, isPublished, isLinkValid, questions } =
-    req.body;
+  const mutableQuestions = questionnaire.questions;
+  mutableQuestions.push(req.body.questions[0]);
+  const { title, description, isPublic, isPublished, isLinkValid } = req.body;
   if (questionnaire) {
     questionnaire.title = title;
     questionnaire.description = description;
     questionnaire.isPublic = isPublic;
     questionnaire.isPublished = isPublished;
     questionnaire.isLinkValid = isLinkValid;
-    questionnaire.questions = questions;
+    questionnaire.questions = mutableQuestions;
+  }
+  const updatedQuestionnaire = await questionnaire.save();
+  res.status(201).json(updatedQuestionnaire);
+});
+
+const publishQuestionnaire = asyncHandler(async (req: any, res) => {
+  const questionnaire = await Quesionnaire.findById(req.params.id);
+  if (questionnaire) {
+    questionnaire.isPublished = true;
   }
   const updatedQuestionnaire = await questionnaire.save();
   res.status(201).json(updatedQuestionnaire);
@@ -64,10 +74,21 @@ const getAllQuestionnaires = asyncHandler(async (req: any, res: any) => {
   res.json(questionnaires);
 });
 
+const answerQuestionnaire = asyncHandler(async (req: any, res: any) => {
+  const questionnaires = await Quesionnaire.findById(req.params.id);
+  const mutableResponses = questionnaires.responses;
+  mutableResponses.push(req.body.answer);
+  questionnaires.responses = mutableResponses;
+  const updatedQuestionnaire = await questionnaires.save();
+  res.status(201).json(updatedQuestionnaire);
+});
+
 export {
   getQuestionnaire,
   getAllQuestionnaires,
   createQuestionnaire,
   editQuestionnaire,
+  publishQuestionnaire,
   deleteQuestionnaire,
+  answerQuestionnaire,
 };

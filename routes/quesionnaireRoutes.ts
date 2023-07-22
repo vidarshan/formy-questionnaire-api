@@ -6,6 +6,8 @@ import {
   createQuestionnaire,
   deleteQuestionnaire,
   editQuestionnaire,
+  publishQuestionnaire,
+  answerQuestionnaire,
 } from "../controllers/quesionnaireControllers";
 const router = express.Router();
 
@@ -18,5 +20,7 @@ router
   .get(protect, getQuestionnaire)
   .delete(protect, deleteQuestionnaire)
   .put(protect, editQuestionnaire);
+router.route("/:id/publish").put(protect, publishQuestionnaire);
+router.route("/answer/:id").put(protect, answerQuestionnaire);
 
 export default router;

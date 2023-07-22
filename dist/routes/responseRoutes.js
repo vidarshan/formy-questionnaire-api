@@ -7,6 +7,6 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const responseControllers_1 = require("../controllers/responseControllers");
 const router = express_1.default.Router();
-router.route("/:id").post(authMiddleware_1.protect, responseControllers_1.submitResponse);
+router.route("/answer/:id").post(authMiddleware_1.protect, responseControllers_1.submitResponse);
 exports.default = router;
 //# sourceMappingURL=responseRoutes.js.map
