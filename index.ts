@@ -4,8 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db";
 import authRoutes from "./routes/authRoutes";
 import questionnaireRoutes from "./routes/quesionnaireRoutes";
-import responseRoutes from "./routes/responseRoutes";
-import cors from 'cors';
+import cors from "cors";
 
 dotenv.config();
 
@@ -20,7 +19,6 @@ const port = 8000;
 
 app.use("/api/users", authRoutes);
 app.use("/api/quesionnaire", questionnaireRoutes);
-app.use("/api/response", responseRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello world");

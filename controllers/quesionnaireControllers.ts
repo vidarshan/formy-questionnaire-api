@@ -75,9 +75,9 @@ const getAllQuestionnaires = asyncHandler(async (req: any, res: any) => {
 });
 
 const answerQuestionnaire = asyncHandler(async (req: any, res: any) => {
-  const questionnaires = await Quesionnaire.findById(req.params.id);
+  const questionnaires = await Quesionnaire.findById(req.body.questionnaireId);
   const mutableResponses = questionnaires.responses;
-  mutableResponses.push(req.body.answer);
+  mutableResponses.push(req.body);
   questionnaires.responses = mutableResponses;
   const updatedQuestionnaire = await questionnaires.save();
   res.status(201).json(updatedQuestionnaire);

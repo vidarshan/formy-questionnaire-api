@@ -52,26 +52,12 @@ const answerSchema = new mongoose_1.Schema({
         type: String,
         default: (0, uuidv4_1.uuid)(),
     },
+    // questionnaireId: { type: String, required: true },
+    name: { type: String, required: false, default: "Anonymous" },
+    email: { type: String, required: false, default: "Anonymous" },
     title: { type: String, required: true },
-    type: { type: String, required: true },
-    values: { type: String, required: false },
-    answers: { type: String, default: null, required: false },
-    required: { type: Boolean, default: false, required: false },
-}, {
-    timestamps: true,
-});
-const responseSchema = new mongoose_1.Schema({
-    _id: {
-        type: String,
-        default: (0, uuidv4_1.uuid)(),
-    },
-    answers: [answerSchema],
-    user: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
-        default: null,
-        required: true,
-        ref: "User",
-    },
+    description: { type: String, required: true },
+    questions: [questionSchema],
 }, {
     timestamps: true,
 });
@@ -105,7 +91,7 @@ const quesionnaireSchema = new mongoose_1.Schema({
         required: true,
     },
     questions: [questionSchema],
-    responses: [questionSchema],
+    responses: [answerSchema],
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         required: true,

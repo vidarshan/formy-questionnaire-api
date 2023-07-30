@@ -87,11 +87,16 @@ const getAllQuestionnaires = (0, express_async_handler_1.default)((req, res) => 
 }));
 exports.getAllQuestionnaires = getAllQuestionnaires;
 const answerQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const questionnaires = yield Quesionnaire_1.default.findById(req.params.id);
-    const mutableResponses = questionnaires.responses;
-    mutableResponses.push(req.body.answers);
-    questionnaires.responses.push(req.body.answers);
-    // res.json(questionnaires);
+    // const questionnaires = await Quesionnaire.findById(req.body.id);
+    // console.log(
+    //   "🚀 ~ file: quesionnaireControllers.ts:83 ~ answerQuestionnaire ~ questionnaires:",
+    //   questionnaires
+    // );
+    // const mutableResponses = questionnaires.responses;
+    // mutableResponses.push(req.body.answer);
+    // questionnaires.responses = mutableResponses;
+    // const updatedQuestionnaire = await questionnaires.save();
+    // res.status(201).json(updatedQuestionnaire);
 }));
 exports.answerQuestionnaire = answerQuestionnaire;
 //# sourceMappingURL=quesionnaireControllers.js.map

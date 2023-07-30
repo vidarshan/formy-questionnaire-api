@@ -15,12 +15,12 @@ router
   .route("/")
   .get(protect, getAllQuestionnaires)
   .post(protect, createQuestionnaire);
+router.route("/submitAnswer").get(protect, answerQuestionnaire);
 router
   .route("/:id")
   .get(protect, getQuestionnaire)
   .delete(protect, deleteQuestionnaire)
   .put(protect, editQuestionnaire);
 router.route("/:id/publish").put(protect, publishQuestionnaire);
-router.route("/answer/:id").put(protect, answerQuestionnaire);
 
 export default router;
