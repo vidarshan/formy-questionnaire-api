@@ -7,7 +7,8 @@ import {
   deleteQuestionnaire,
   editQuestionnaire,
   publishQuestionnaire,
-  answerQuestionnaire,
+  getAllQuestionnairesStats,
+  unPublishQuestionnaire,
 } from "../controllers/quesionnaireControllers";
 const router = express.Router();
 
@@ -15,12 +16,14 @@ router
   .route("/")
   .get(protect, getAllQuestionnaires)
   .post(protect, createQuestionnaire);
-router.route("/submitAnswer").get(protect, answerQuestionnaire);
+router.route("/stats").get(protect, getAllQuestionnairesStats);
+
 router
   .route("/:id")
   .get(protect, getQuestionnaire)
   .delete(protect, deleteQuestionnaire)
   .put(protect, editQuestionnaire);
 router.route("/:id/publish").put(protect, publishQuestionnaire);
+router.route("/:id/unpublish").put(protect, unPublishQuestionnaire);
 
 export default router;

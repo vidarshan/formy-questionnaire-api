@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.answerQuestionnaire = exports.deleteQuestionnaire = exports.publishQuestionnaire = exports.editQuestionnaire = exports.createQuestionnaire = exports.getAllQuestionnaires = exports.getQuestionnaire = void 0;
+exports.unPublishQuestionnaire = exports.getAllQuestionnairesStats = exports.deleteQuestionnaire = exports.publishQuestionnaire = exports.editQuestionnaire = exports.createQuestionnaire = exports.getAllQuestionnaires = exports.getQuestionnaire = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const Quesionnaire_1 = __importDefault(require("../models/Quesionnaire"));
 const createQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -25,7 +25,7 @@ const createQuestionnaire = (0, express_async_handler_1.default)((req, res) => _
         questions,
         user: _id,
         isPublished: false,
-        isLinkValid: true,
+        isLinkValid: false,
         isOneTime,
     });
     const createdQuestionnaire = yield newQuestionnaire.save();
@@ -72,31 +72,74 @@ const deleteQuestionnaire = (0, express_async_handler_1.default)((req, res) => _
 exports.deleteQuestionnaire = deleteQuestionnaire;
 const getQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const questionnaire = yield Quesionnaire_1.default.findById(req.params.id);
-    if (questionnaire) {
-        res.json(questionnaire);
+    if (req.route.path.includes("/open/")) {
+        if (questionnaire.isPublic) {
+            if (questionnaire) {
+                res.json(questionnaire);
+            }
+            else {
+                res.status(404);
+                throw new Error("Questionnaire not found");
+            }
+        }
+        else {
+            res.status(404);
+            throw new Error("Questionnaire not accessible");
+        }
     }
     else {
-        res.status(404);
-        throw new Error("Questionnaire not found");
+        if (questionnaire) {
+            res.json(questionnaire);
+        }
+        else {
+            res.status(404);
+            throw new Error("Questionnaire not found");
+        }
     }
 }));
 exports.getQuestionnaire = getQuestionnaire;
 const getAllQuestionnaires = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const questionnaires = yield Quesionnaire_1.default.find({ user: req.user._id });
-    res.json(questionnaires);
+    const pageSize = 10;
+    const page = Number(req.query.pageNumber) || 1;
+    const keyword = req.query.keyword
+        ? {
+            title: {
+                $regex: req.query.keyword,
+                $options: "i",
+            },
+        }
+        : {};
+    const count = yield Quesionnaire_1.default.countDocuments(Object.assign({}, keyword));
+    const questionnaires = yield Quesionnaire_1.default.find(Object.assign({}, keyword))
+        .limit(pageSize)
+        .skip(pageSize * (page - 1));
+    res.json({
+        questionnaires,
+        page,
+        pages: Math.ceil(count / pageSize),
+        keyword,
+    });
 }));
 exports.getAllQuestionnaires = getAllQuestionnaires;
-const answerQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const questionnaires = await Quesionnaire.findById(req.body.id);
-    // console.log(
-    //   "🚀 ~ file: quesionnaireControllers.ts:83 ~ answerQuestionnaire ~ questionnaires:",
-    //   questionnaires
-    // );
-    // const mutableResponses = questionnaires.responses;
-    // mutableResponses.push(req.body.answer);
-    // questionnaires.responses = mutableResponses;
-    // const updatedQuestionnaire = await questionnaires.save();
-    // res.status(201).json(updatedQuestionnaire);
+const getAllQuestionnairesStats = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
+    const published = (_a = (yield Quesionnaire_1.default.find({ isPublished: true }))) === null || _a === void 0 ? void 0 : _a.length;
+    const unPublished = (_b = (yield Quesionnaire_1.default.find({ isPublished: false }))) === null || _b === void 0 ? void 0 : _b.length;
+    const all = (_c = (yield Quesionnaire_1.default.find())) === null || _c === void 0 ? void 0 : _c.length;
+    res.json({
+        published,
+        unPublished,
+        all,
+    });
 }));
-exports.answerQuestionnaire = answerQuestionnaire;
+exports.getAllQuestionnairesStats = getAllQuestionnairesStats;
+const unPublishQuestionnaire = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const questionnaire = yield Quesionnaire_1.default.findById(req.params.id);
+    if (questionnaire) {
+        questionnaire.isPublished = false;
+    }
+    const updatedQuestionnaire = yield questionnaire.save();
+    res.status(201).json(updatedQuestionnaire);
+}));
+exports.unPublishQuestionnaire = unPublishQuestionnaire;
 //# sourceMappingURL=quesionnaireControllers.js.map

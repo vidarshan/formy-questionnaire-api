@@ -12,7 +12,7 @@ const createQuestionnaire = asyncHandler(async (req: any, res) => {
     questions,
     user: _id,
     isPublished: false,
-    isLinkValid: true,
+    isLinkValid: false,
     isOneTime,
   });
 
@@ -60,26 +60,72 @@ const deleteQuestionnaire = asyncHandler(async (req: any, res: any) => {
 
 const getQuestionnaire = asyncHandler(async (req: any, res: any) => {
   const questionnaire = await Quesionnaire.findById(req.params.id);
-
-  if (questionnaire) {
-    res.json(questionnaire);
+  if (req.route.path.includes("/open/")) {
+    if (questionnaire.isPublic) {
+      if (questionnaire) {
+        res.json(questionnaire);
+      } else {
+        res.status(404);
+        throw new Error("Questionnaire not found");
+      }
+    } else {
+      res.status(404);
+      throw new Error("Questionnaire not accessible");
+    }
   } else {
-    res.status(404);
-    throw new Error("Questionnaire not found");
+    if (questionnaire) {
+      res.json(questionnaire);
+    } else {
+      res.status(404);
+      throw new Error("Questionnaire not found");
+    }
   }
 });
 
 const getAllQuestionnaires = asyncHandler(async (req: any, res: any) => {
-  const questionnaires = await Quesionnaire.find({ user: req.user._id });
-  res.json(questionnaires);
+  const pageSize = 10;
+  const page = Number(req.query.pageNumber) || 1;
+
+  const keyword = req.query.keyword
+    ? {
+        title: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+
+  const count = await Quesionnaire.countDocuments({ ...keyword });
+  const questionnaires = await Quesionnaire.find({ ...keyword })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  res.json({
+    questionnaires,
+    page,
+    pages: Math.ceil(count / pageSize),
+    keyword,
+  });
 });
 
-const answerQuestionnaire = asyncHandler(async (req: any, res: any) => {
-  const questionnaires = await Quesionnaire.findById(req.body.questionnaireId);
-  const mutableResponses = questionnaires.responses;
-  mutableResponses.push(req.body);
-  questionnaires.responses = mutableResponses;
-  const updatedQuestionnaire = await questionnaires.save();
+const getAllQuestionnairesStats = asyncHandler(async (req: any, res: any) => {
+  const published = (await Quesionnaire.find({ isPublished: true }))?.length;
+  const unPublished = (await Quesionnaire.find({ isPublished: false }))?.length;
+  const all = (await Quesionnaire.find())?.length;
+
+  res.json({
+    published,
+    unPublished,
+    all,
+  });
+});
+
+const unPublishQuestionnaire = asyncHandler(async (req: any, res) => {
+  const questionnaire = await Quesionnaire.findById(req.params.id);
+  if (questionnaire) {
+    questionnaire.isPublished = false;
+  }
+  const updatedQuestionnaire = await questionnaire.save();
   res.status(201).json(updatedQuestionnaire);
 });
 
@@ -90,5 +136,6 @@ export {
   editQuestionnaire,
   publishQuestionnaire,
   deleteQuestionnaire,
-  answerQuestionnaire,
+  getAllQuestionnairesStats,
+  unPublishQuestionnaire,
 };

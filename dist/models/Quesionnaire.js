@@ -52,12 +52,12 @@ const answerSchema = new mongoose_1.Schema({
         type: String,
         default: (0, uuidv4_1.uuid)(),
     },
-    // questionnaireId: { type: String, required: true },
+    questionnaireId: { type: String, required: true },
     name: { type: String, required: false, default: "Anonymous" },
     email: { type: String, required: false, default: "Anonymous" },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    questions: [questionSchema],
+    questions: { type: mongoose_1.Schema.Types.Mixed },
 }, {
     timestamps: true,
 });
