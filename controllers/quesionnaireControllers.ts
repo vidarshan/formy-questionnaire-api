@@ -83,7 +83,7 @@ const getQuestionnaire = asyncHandler(async (req: any, res: any) => {
 });
 
 const getAllQuestionnaires = asyncHandler(async (req: any, res: any) => {
-  const pageSize = 10;
+  const pageSize = 8;
   const page = Number(req.query.pageNumber) || 1;
 
   const keyword = req.query.keyword
