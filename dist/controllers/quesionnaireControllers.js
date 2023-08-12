@@ -109,8 +109,8 @@ const getAllQuestionnaires = (0, express_async_handler_1.default)((req, res) => 
             },
         }
         : {};
-    const count = yield Quesionnaire_1.default.countDocuments(Object.assign({}, keyword));
-    const questionnaires = yield Quesionnaire_1.default.find(Object.assign({}, keyword))
+    const count = yield Quesionnaire_1.default.countDocuments(Object.assign(Object.assign({}, keyword), { user: req.user._id }));
+    const questionnaires = yield Quesionnaire_1.default.find(Object.assign(Object.assign({}, keyword), { user: req.user._id }))
         .limit(pageSize)
         .skip(pageSize * (page - 1));
     res.json({
@@ -123,9 +123,9 @@ const getAllQuestionnaires = (0, express_async_handler_1.default)((req, res) => 
 exports.getAllQuestionnaires = getAllQuestionnaires;
 const getAllQuestionnairesStats = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c;
-    const published = (_a = (yield Quesionnaire_1.default.find({ isPublished: true }))) === null || _a === void 0 ? void 0 : _a.length;
-    const unPublished = (_b = (yield Quesionnaire_1.default.find({ isPublished: false }))) === null || _b === void 0 ? void 0 : _b.length;
-    const all = (_c = (yield Quesionnaire_1.default.find())) === null || _c === void 0 ? void 0 : _c.length;
+    const published = (_a = (yield Quesionnaire_1.default.find({ isPublished: true, user: req.user._id }))) === null || _a === void 0 ? void 0 : _a.length;
+    const unPublished = (_b = (yield Quesionnaire_1.default.find({ isPublished: false, user: req.user._id }))) === null || _b === void 0 ? void 0 : _b.length;
+    const all = (_c = (yield Quesionnaire_1.default.find({ user: req.user._id }))) === null || _c === void 0 ? void 0 : _c.length;
     res.json({
         published,
         unPublished,

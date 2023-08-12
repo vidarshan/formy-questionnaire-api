@@ -95,11 +95,16 @@ const getAllQuestionnaires = asyncHandler(async (req: any, res: any) => {
       }
     : {};
 
-  const count = await Quesionnaire.countDocuments({ ...keyword });
-  const questionnaires = await Quesionnaire.find({ ...keyword })
+  const count = await Quesionnaire.countDocuments({
+    ...keyword,
+    user: req.user._id,
+  });
+  const questionnaires = await Quesionnaire.find({
+    ...keyword,
+    user: req.user._id,
+  })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
-
   res.json({
     questionnaires,
     page,
@@ -109,9 +114,13 @@ const getAllQuestionnaires = asyncHandler(async (req: any, res: any) => {
 });
 
 const getAllQuestionnairesStats = asyncHandler(async (req: any, res: any) => {
-  const published = (await Quesionnaire.find({ isPublished: true }))?.length;
-  const unPublished = (await Quesionnaire.find({ isPublished: false }))?.length;
-  const all = (await Quesionnaire.find())?.length;
+  const published = (
+    await Quesionnaire.find({ isPublished: true, user: req.user._id })
+  )?.length;
+  const unPublished = (
+    await Quesionnaire.find({ isPublished: false, user: req.user._id })
+  )?.length;
+  const all = (await Quesionnaire.find({ user: req.user._id }))?.length;
 
   res.json({
     published,
